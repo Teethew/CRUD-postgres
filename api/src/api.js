@@ -1,16 +1,18 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const { json } = require('express/lib/response');
+
 const config = require('./config.json');
 const path = require('path');
 const fs = require('fs');
-const { json } = require('express/lib/response');
+
 const basename = path.basename(__filename);
 let model_dir = path.dirname(__dirname);
-model_dir = path.join(model_dir, 'model')
+console.log(model_dir)
+model_dir = path.join(model_dir, 'model');
 const db = {};
 
+// Creating connection with database
 const sequelize = new Sequelize('engsoft', 'postgres', 'example', { dialect: 'postgres', host: 'postgres-container' });
-// const sequelize = new Sequelize(config.database, config.username, config.password, {config});
-
 async () => {
   try {
     sequelize.sync();
@@ -21,6 +23,7 @@ async () => {
   }
 }
 
+// Creating objects ORM
 fs
   .readdirSync(model_dir)
   .filter(file => {
@@ -31,6 +34,7 @@ fs
     db[model.name] = model;
   });
 
+// Creating asssociation of objetcs
 Object.keys(db).forEach((modelName) => {
   if ('associate' in db[modelName].options) {
     db[modelName].options.associate(db)

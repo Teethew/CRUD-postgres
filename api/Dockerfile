@@ -1,4 +1,7 @@
 FROM node:alpine
 WORKDIR /home/node/app
-CMD npm start
+
+COPY package.json .
+RUN npm install --production
+CMD ["npm", "start"]
 
